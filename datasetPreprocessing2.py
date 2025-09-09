@@ -4,6 +4,7 @@ import dlib
 import numpy as np
 import pickle
 from sklearn.cluster import KMeans
+from tqdm import tqdm
 
 # Configuration
 D = 20000
@@ -137,13 +138,12 @@ def encode_image(img, loc_dict, int_dict, grad_dict):
 def build_clustered_prototypes(dataset_path, loc_dict, int_dict, grad_dict):
     clustered_prototypes = {}
 
-    for person in os.listdir(dataset_path):
+    persons = [p for p in os.listdir(dataset_path) if os.path.isdir(os.path.join(dataset_path, p))]
+    for person in tqdm(persons, desc="Persons"):
         person_path = os.path.join(dataset_path, person)
-        if not os.path.isdir(person_path):
-            continue
-
         encodings = []
-        for img_file in os.listdir(person_path):
+        img_files = os.listdir(person_path)
+        for img_file in tqdm(img_files, desc=f"{person}", leave=False):
             img_path = os.path.join(person_path, img_file)
             img = cv2.imread(img_path)
             try:
@@ -151,19 +151,19 @@ def build_clustered_prototypes(dataset_path, loc_dict, int_dict, grad_dict):
                 encoding = encode_image(preprocessed, loc_dict, int_dict, grad_dict)
                 encodings.append(encoding)
             except Exception as e:
-                print(f"Skipping {img_path}: {e}")
+                tqdm.write(f"Skipping {img_path}: {e}")
 
         if len(encodings) == 0:
-            print(f"No valid encodings for {person}")
+            tqdm.write(f"No valid encodings for {person}")
             continue
 
         encodings = np.array(encodings)
 
         if len(encodings) < N_CLUSTERS:
-            print(f"Person {person} has fewer images than clusters; using all encodings as prototypes.")
+            tqdm.write(f"Person {person} has fewer images than clusters; using all encodings as prototypes.")
             prototypes = list(encodings)
         else:
-            print(f"Clustering encodings for {person}...")
+            tqdm.write(f"Clustering encodings for {person}...")
             kmeans = KMeans(n_clusters=N_CLUSTERS, random_state=42, n_init=10)
             labels = kmeans.fit_predict(encodings)
 
@@ -174,7 +174,7 @@ def build_clustered_prototypes(dataset_path, loc_dict, int_dict, grad_dict):
                 prototypes.append(prototype)
 
         clustered_prototypes[person] = prototypes
-        print(f"Stored {len(prototypes)} prototypes for {person}")
+        tqdm.write(f"Stored {len(prototypes)} prototypes for {person}")
 
     return clustered_prototypes
 

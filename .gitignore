@@ -21,3 +21,9 @@ Thumbs.db
 
 # PyCharm
 .idea/
+
+
+dataset/
+*.csv
+*.zip
+test/

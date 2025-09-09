@@ -1,0 +1,32 @@
+============================================================
+FACE RECOGNITION SYSTEM PERFORMANCE REPORT
+============================================================
+Method: HAMMING
+Threshold: 0.65
+Test Dataset: dataset
+Number of People in Database: 5
+Total Test Images: 2011
+
+CLASSIFICATION METRICS:
+------------------------------
+Accuracy: 0.9324
+Precision: 1.0000
+Recall: 0.9324
+F1-Score: 0.9647
+Recognition Rate: 0.9324
+
+ERROR RATES:
+------------------------------
+False Acceptance Rate (FAR): 0.0000
+False Rejection Rate (FRR): 0.0000
+
+PERFORMANCE METRICS:
+------------------------------
+Average Processing Time: 0.2696 seconds
+Average Confidence Score: 0.4997
+
+DETAILED STATISTICS:
+------------------------------
+Confidence Score - Min: 0.0000, Max: 0.5726, Std: 0.1348
+Processing Time - Min: 0.0201s, Max: 1.9157s, Std: 0.1309s
+============================================================
